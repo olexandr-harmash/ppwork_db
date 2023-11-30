@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "allowJs": false,
+    "module": "commonjs",
+    "target": "es2019",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}

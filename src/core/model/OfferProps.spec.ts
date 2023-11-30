@@ -2,7 +2,6 @@
 import OfferSale from './OfferSales';
 import OfferService from './OfferServices';
 import OfferVariety from './OfferVariety';
-import BaseOfferData from './BaseOfferData';
 
 describe('Entities Tests', () => {
   describe('OfferSale', () => {

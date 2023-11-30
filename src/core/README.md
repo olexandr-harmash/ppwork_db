@@ -1,6 +1,6 @@
-# Project Name
+# Offer Management System Core Architect
 
-Description of your project.
+This project implements an Offer Management System with a modular architecture designed for flexibility and scalability.
 
 ## Table of Contents
 

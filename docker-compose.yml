@@ -1,0 +1,58 @@
+version: '3'
+
+services:
+  # Сервис API
+  api:
+    image: node:18-alpine
+    container_name: app-node
+    build: .
+    ports:
+      - 3001:3001
+    environment:
+      - NODE_ENV=development
+      - NODE_PORT=3200
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: npm run start
+    links:
+      - sequelize
+    networks:
+      - appnet
+
+  sequelize:
+    container_name: app-sequelize
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      PGDATA: /var/lib/postgresql/data/app
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - appnet
+    healthcheck:
+      test: ["CMD", "ping", "-c", "4", "sequelize:8080"]
+      interval: 5s
+      timeout: 5s
+      retries: 2
+
+  adminer:
+    container_name: app-adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - sequelize
+    networks:
+      - appnet
+
+volumes: 
+  pgdata:
+
+networks: 
+  appnet:
