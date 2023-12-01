@@ -1,12 +1,13 @@
 import { BaseApp } from "../BaseApp";
-import * as BodyParser from 'body-parser';
-import Cors from 'cors';
+import * as BodyParser from "body-parser";
 import Express from "express";
 import * as Http from "http";
 import * as Https from "https";
 import { networkInterfaces, NetworkInterfaceInfo } from "os";
 import * as fs from "fs";
 import * as path from "path";
+import { Logger } from "../../logger";
+import loggerMiddleware from "../../router/midelware/Logger";
 
 export default class App extends BaseApp {
   public readonly express: Express.Application;
@@ -16,26 +17,35 @@ export default class App extends BaseApp {
   constructor(config: any) {
     super(config);
 
-    // Init express
     this.express = Express();
-    this.express.use(Cors);
-    this.express.use(BodyParser.json(this.config.bodyParser));
-    this.express.use(BodyParser.urlencoded(this.config.bodyParser));
+    this.express.use(BodyParser.urlencoded({ extended: false }));
+    this.express.use(BodyParser.json());
+    this.express.use(
+      loggerMiddleware(
+        new Logger(this.config).setPrefix(`[Router]:`).getLogger()
+      )
+    );
   }
 
-  async init() {
+  async Init() {
     try {
       await this.sequelize.authenticate();
 
-      this.server = await this.ServerInitializer();
-      this.ServerListener();
+      const router = new (
+        await import(`../../router/v${this.config.apiVersion}`)
+      ).default();
+      router.Init();
+      this.express.use(`/api/v${this.config.apiVersion}`, router.getRouter());
+
+      this.server = await this.serverInitializer();
+      this.serverListener();
     } catch (error) {
       this.logger.error(error);
     }
   }
 
-  private ServerInitializer = ServerInitializer;
-  private ServerListener = ServerListener;
+  private serverInitializer = ServerInitializer;
+  private serverListener = ServerListener;
 }
 
 async function ServerInitializer(
