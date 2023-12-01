@@ -24,10 +24,18 @@ export abstract class BaseApp {
     this.config.operatorsAliases = Op;
     this.config.models = [join(__dirname, "models")];
 
-    this.sequelize = new Sequelize(this.config[process.env.NODE_ENV || 'development']);
+    this.sequelize = new Sequelize(
+      this.config[process.env.NODE_ENV || "development"]
+    );
 
-    Object.keys(this.models).map((k) => {
+    const modelKeys = Object.keys(this.models);
+
+    modelKeys.map((k) => {
       this.models[k].Init(this.sequelize);
+    });
+
+    modelKeys.map((k) => {
+      this.models[k].Assosiation(this.models);
     });
   }
 }
