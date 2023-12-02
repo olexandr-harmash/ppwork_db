@@ -1,16 +1,16 @@
-import BaseOfferProps, { BaseOfferPropsAttributes } from "./BaseOfferProps";
+import OfferVariety, { OfferVarietyAttributes } from "./OfferVariety";
 
-interface OfferServiceAttributes extends BaseOfferPropsAttributes {
+interface OfferServiceAttributes extends OfferVarietyAttributes {
   cost: number;
 }
 
-export default class OfferService extends BaseOfferProps {
+export default class OfferService extends OfferVariety {
   readonly props: OfferServiceAttributes;
 
   protected constructor(props: OfferServiceAttributes, id?: string) {
     super(props, id);
 
-    this.props = { ...super.getProps(), ...props };
+    this.props = { ...props };
   }
 
   protected getProps() {

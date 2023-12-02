@@ -5,7 +5,6 @@ This project implements an Offer Management System with a modular architecture d
 ## Project Structure
 
 - `BaseOfferData`: Abstract class representing the basic attributes of an offer.
-- `BaseOfferProps`: Abstract class representing the properties associated with an offer.
 - `Offer`: Class representing a specific offer with associated services and multipliers.
 - `OfferSale`: Class representing a sale associated with an offer, including a multiplier.
 - `OfferService`: Class representing a service associated with an offer, including a cost.
@@ -38,10 +37,6 @@ To gain a deeper understanding of the project's architecture and code, please re
 1. **BaseOfferData**
 
    - [BaseOfferData Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
-
-2. **BaseOfferProps**
-
-   - [BaseOfferProps Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
 3. **CertainItem**
 

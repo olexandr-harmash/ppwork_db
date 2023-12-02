@@ -1,8 +1,8 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
-import BaseOfferProps from "./BaseOfferProps";
 import CertainItem from "./CertainItem";
-import OfferService from "./OfferServices";
-import OfferSale from "./OfferSales";
+import OfferService from "./OfferService";
+import OfferSale from "./OfferSale";
+import OfferVariety from "./OfferVariety";
 
 export interface OfferAttributes extends BaseOfferDataAttributes {
   services: OfferService[];
@@ -15,18 +15,24 @@ export interface OfferAttributes extends BaseOfferDataAttributes {
  * @extends BaseOfferData
  */
 export default class Offer extends BaseOfferData {
+  getOfferMap(): any {
+    throw new Error("Method not implemented.");
+  }
+  getCostsMap(): any {
+    throw new Error("Method not implemented.");
+  }
   /**
    * Maps to store attributes for sales and services.
    *
    * @type {Object.<string, string[]>}
    */
-  public readonly salesMap: { [key: string]: string[] };
+  public readonly serviceMap: { [key: string]: string[] };
   /**
    * Maps to store attributes for services.
    *
    * @type {Object.<string, string[]>}
    */
-  public readonly servicesMap: { [key: string]: string[] };
+  public readonly varietyMap: { [key: string]: string[] };
 
   /**
    * Properties specific to the Offer class.
@@ -49,8 +55,8 @@ export default class Offer extends BaseOfferData {
       ...props,
     };
 
-    this.salesMap = this.getPropsMap(props.sales);
-    this.servicesMap = this.getPropsMap(props.services);
+    this.serviceMap = this.getPropsMap(props.services);
+    this.varietyMap = this.getPropsMap(props.varieties);
   }
 
   /**
@@ -80,11 +86,9 @@ export default class Offer extends BaseOfferData {
    * @returns {OfferService[]} Array of services that match the provided attributes.
    * @private
    */
-  private getMatchedCosts(attributes: BaseOfferProps) {
-    const existedCosts = this.props.services.filter((cost) =>
-      attributes
-        .getKeys()
-        .find((key) => cost.ifAttributeExists(key, attributes.getValue(key)))
+  private getMatchedServices(attributes: OfferVariety[]) {
+    const existedCosts = this.props.services.filter((service) =>
+      attributes.find((attribute) => service.compare(attribute))
     );
     return existedCosts;
   }
@@ -96,12 +100,8 @@ export default class Offer extends BaseOfferData {
    * @returns {OfferSale | undefined} The multiplier that matches the provided attributes, if any.
    * @private
    */
-  private getMatchedMultiplies(attributes: BaseOfferProps) {
-    const existedMultiply = this.props.sales.find((multiply) =>
-      multiply.isAllMultiplyKeysMatched(attributes)
-    );
-
-    return existedMultiply;
+  private getMatchedSales(attributes: OfferVariety[]) {
+    return this.props.sales.find((sale) => sale.isAllSalesMatched(attributes));
   }
 
   /**
@@ -111,15 +111,15 @@ export default class Offer extends BaseOfferData {
    * @returns {Object.<string, string[]>} A map of attributes.
    * @private
    */
-  private getPropsMap(withAttr: BaseOfferProps[]) {
-    return withAttr.reduce<{ [key: string]: string[] }>((prev, curr) => {
-      const key = curr.getKeys()[0];
+  private getPropsMap(varieties: OfferVariety[]) {
+    return varieties.reduce<{ [key: string]: string[] }>((prev, variety: OfferVariety) => {
+      const key = variety.getName();
 
       if (!prev[key]) {
         prev[key] = [];
       }
 
-      prev[key].push(curr.getAttributes()[key]);
+      prev[key].push(variety.getValue());
 
       return prev;
     }, {});
@@ -130,8 +130,8 @@ export default class Offer extends BaseOfferData {
    *
    * @returns {Object.<string, string[]>} A map of sales attributes.
    */
-  public getOfferMap() {
-    return this.salesMap;
+  public getServiceMap() {
+    return this.serviceMap;
   }
 
   /**
@@ -139,8 +139,8 @@ export default class Offer extends BaseOfferData {
    *
    * @returns {Object.<string, string[]>} A map of service attributes.
    */
-  public getCostsMap() {
-    return this.servicesMap;
+  public getVarietyMap() {
+    return this.varietyMap;
   }
 
   /**
@@ -149,17 +149,17 @@ export default class Offer extends BaseOfferData {
    * @param {BaseOfferProps} attributes - The attributes to divide by.
    * @returns {CertainItem} The created CertainItem instance.
    */
-  public devideByAttributes(attributes: BaseOfferProps) {
-    const existedCosts = this.getMatchedCosts(attributes);
-    const existedOffer = this.getMatchedOffers(attributes);
-    const existedMultiply = this.getMatchedMultiplies(attributes);
+  public devideByAttributes(attributes: OfferVariety[]) {
+    const existedCosts = this.getMatchedServices(attributes);
+    const existedOffer = this.getMatchedVarieties(attributes);
+    const existedMultiply = this.getMatchedSales(attributes);
 
     return CertainItem.create(
       {
         cost: this.props.cost,
         name: this.props.name,
-        offers: existedOffer,
-        propCosts: existedCosts,
+        varieties: existedOffer,
+        services: existedCosts,
         sale: existedMultiply,
       },
       this.getUuid()

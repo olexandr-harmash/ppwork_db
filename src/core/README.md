@@ -6,7 +6,6 @@ This project implements an Offer Management System with a modular architecture d
 
 - [Entities](#entities)
   - [BaseOfferData](#baseofferdata)
-  - [BaseOfferProps](#baseofferprops)
   - [CertainItem](#certainitem)
   - [Offer](#offer)
   - [OfferSale](#offersale)
@@ -25,24 +24,7 @@ Base class for offer data entities.
 
 - `name`: string - The name of the offer data.
 - `cost`: number - The base cost of the offer data.
-- `sales`: BaseOfferProps[] - Array of sales associated with the offer data.
-
-### BaseOfferProps
-
-Base class for offer properties entities.
-
-#### Properties
-
-- `attributes`: { [key: string]: string } - Key-value pairs representing the attributes of the offer.
-
-#### Methods
-
-- `getKey(): string` - Get the key of the first attribute.
-- `getValue(key: string): string` - Get the value of a specific attribute.
-- `getAttributes(): { [key: string]: string }` - Get all attributes.
-- `getAmountOfAttributes(): number` - Get the number of attributes.
-- `ifAttributeExists(key: string, value: string): boolean` - Check if a specific attribute exists.
-- `getKeys(): string[]` - Get all keys of the attributes.
+- `varieties`: OfferVariaty[] - Array of varieties associated with the offer data.
 
 ### CertainItem
 
@@ -63,14 +45,14 @@ Class representing an offer.
 #### Properties
 
 - `props`: OfferAttributes - The attributes of the offer.
-- `salesMap`: { [key: string]: string[] } - A map of sales attributes.
-- `servicesMap`: { [key: string]: string[] } - A map of service attributes.
+- `varietyMap`: { [key: string]: string[] } - A map of variety attributes.
+- `serviceMap`: { [key: string]: string[] } - A map of service attributes.
 
 #### Methods
 
-- `getOfferMap(): { [key: string]: string[] }` - Get a map of sales attributes.
-- `getCostsMap(): { [key: string]: string[] }` - Get a map of service attributes.
-- `devideByAttributes(attributes: BaseOfferProps): CertainItem` - Divide the offer into a certain item based on provided attributes.
+- `getVarietyMap(): { [key: string]: string[] }` - Get a map of variety attributes.
+- `getServiceMap(): { [key: string]: string[] }` - Get a map of service attributes.
+- `devideByAttributes(attributes: OfferVariaty[]): CertainItem` - Divide the offer into a certain item based on provided attributes.
 
 ### OfferSale
 
@@ -82,8 +64,9 @@ Class representing a sale associated with an offer.
 
 #### Methods
 
-- `getMultiply(): number` - Get the multiplier of the sale.
-- `isAllMultiplyKeysMatched(attributes: BaseOfferProps): boolean` - Check if all multiply keys are matched.
+- `getSale(): number` - Get the multiplier of the sale.
+- `isAllSalesMatched(attributes: OfferVariaty[]): boolean` - Check if all fariaties are matched.
+- `isVarietiesExist(attributes: OfferVariety[]): boolean` - Check if all fariaties are matched.
 
 ### OfferService
 
