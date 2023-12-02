@@ -13,4 +13,4 @@ if (process.argv.length > 2) {
 export default app;
 
 // Launch app
-app.init();
+app.Init();

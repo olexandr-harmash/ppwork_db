@@ -1,6 +1,7 @@
 import { resolve } from "path";
 
 export default {
+    apiVersion: 1,
     protocol: process.env.NODE_ENV === 'production' ? 'https' : 'http',
     port: 3001,
 
