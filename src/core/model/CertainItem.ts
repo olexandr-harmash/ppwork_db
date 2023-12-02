@@ -1,6 +1,6 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
-import OfferService from "./OfferServices";
-import OfferSale from "./OfferSales";
+import OfferService from "./OfferService";
+import OfferSale from "./OfferSale";
 
 /**
  * Interface defining the attributes specific to the CertainItem class.
@@ -10,7 +10,7 @@ export interface CertainItemAttributes extends BaseOfferDataAttributes {
   /**
    * Array of additional service costs associated with the certain item.
    */
-  propCosts: OfferService[];
+  services: OfferService[];
 
   /**
    * The sale associated with the certain item.
@@ -68,12 +68,8 @@ export default class CertainItem extends BaseOfferData {
    * @returns {OfferService[]} Array of services without sales.
    */
   private getCostWithoutSales() {
-    return this.props.propCosts.filter(
-      (cost) =>
-        !this.props.sale?.ifAttributeExists(
-          cost.getKey(),
-          cost.getValue(cost.getKey())
-        )
+    return this.props.services.filter(
+      (service) => !this.props.sale?.isVarietiesExist([service])
     );
   }
 
@@ -83,11 +79,8 @@ export default class CertainItem extends BaseOfferData {
    * @returns {OfferService[]} Array of services with sales.
    */
   private getCostWithSales() {
-    return this.props.propCosts.filter((cost) =>
-      this.props.sale?.ifAttributeExists(
-        cost.getKey(),
-        cost.getValue(cost.getKey())
-      )
+    return this.props.services.filter((service) =>
+      this.props.sale?.isVarietiesExist([service])
     );
   }
 
@@ -109,7 +102,7 @@ export default class CertainItem extends BaseOfferData {
     const saledCost =
       (this.props.cost + this.summarizeCost(this.getCostWithSales())) *
       //@ts-ignore
-      (this.props.sale?.getMultiply() || 1);
+      (this.props.sale?.getSale() || 1);
     return saledCost + this.summarizeCost(this.getCostWithoutSales());
   }
 }

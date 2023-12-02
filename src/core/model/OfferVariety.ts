@@ -1,18 +1,28 @@
-import BaseOfferProps, { BaseOfferPropsAttributes } from "./BaseOfferProps";
+export interface OfferVarietyAttributes {
+  name: string;
+  value: string;
+}
 
-interface OfferVarietyAttributes extends BaseOfferPropsAttributes {}
-
-export default class OfferVariety extends BaseOfferProps {
+export default class OfferVariety {
   readonly props: OfferVarietyAttributes;
 
   protected constructor(props: OfferVarietyAttributes, id?: string) {
-    super(props, id);
-
-    this.props = { ...super.getProps(), ...props };
+    this.props = props;
   }
 
-  protected getProps() {
-    return this.props;
+  getName() {
+    return this.props.name;
+  }
+
+  getValue() {
+    return this.props.value;
+  }
+
+  compare(variety: OfferVariety) {
+    return (
+      this.getName() === variety.getName() &&
+      this.getValue() === variety.getValue()
+    );
   }
 
   static create(props: OfferVarietyAttributes, id?: string) {

@@ -1,10 +1,10 @@
 import Entity from "../Entity";
-import BaseOfferProps from "./BaseOfferProps";
+import OfferVariety from "./OfferVariety";
 
 export interface BaseOfferDataAttributes {
   name: string;
   cost: number;
-  offers: BaseOfferProps[];
+  varieties: OfferVariety[];
 }
 
 export default abstract class BaseOfferData extends Entity<BaseOfferDataAttributes> {
@@ -12,13 +12,23 @@ export default abstract class BaseOfferData extends Entity<BaseOfferDataAttribut
     super(props, id);
   }
 
-  protected getMatchedOffers(attributes: BaseOfferProps) {
-    const existedCosts = this.props.offers.filter((offer) =>
-      attributes
-        .getKeys()
-        .find((key) => offer.ifAttributeExists(key, attributes.getValue(key)))
+  protected getMatchedVarieties(attributes: OfferVariety[]) {
+    const existedCosts = this.props.varieties.filter((variety) =>
+      attributes.find((attribute) => variety.compare(attribute))
     );
     return existedCosts;
+  }
+
+  public getName() {
+    return this.props.name;
+  }
+
+  public getCost() {
+    return this.props.cost;
+  }
+
+  public getId() {
+    return this.id.getStringValue();
   }
 
   protected getUuid(): string {
