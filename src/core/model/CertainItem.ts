@@ -1,17 +1,12 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
-import OfferService from "./OfferService";
 import OfferSale from "./OfferSale";
+import OfferVariety from "./OfferVariety";
 
 /**
  * Interface defining the attributes specific to the CertainItem class.
  * @interface
  */
 export interface CertainItemAttributes extends BaseOfferDataAttributes {
-  /**
-   * Array of additional service costs associated with the certain item.
-   */
-  services: OfferService[];
-
   /**
    * The sale associated with the certain item.
    */
@@ -68,8 +63,9 @@ export default class CertainItem extends BaseOfferData {
    * @returns {OfferService[]} Array of services without sales.
    */
   private getCostWithoutSales() {
-    return this.props.services.filter(
-      (service) => !this.props.sale?.isVarietiesExist([service])
+    return this.props.varieties.filter(
+      (variety) =>
+        variety.getCost() && !this.props.sale?.isVarietiesExist([variety])
     );
   }
 
@@ -79,18 +75,19 @@ export default class CertainItem extends BaseOfferData {
    * @returns {OfferService[]} Array of services with sales.
    */
   private getCostWithSales() {
-    return this.props.services.filter((service) =>
-      this.props.sale?.isVarietiesExist([service])
+    return this.props.varieties.filter(
+      (variety) =>
+        variety.getCost() && this.props.sale?.isVarietiesExist([variety])
     );
   }
 
   /**
    * Private method to summarize the cost of services.
    * @private
-   * @param {OfferService[]} services - Array of services to summarize.
+   * @param {OfferVariety[]} services - Array of services to summarize.
    * @returns {number} The total cost.
    */
-  private summarizeCost(services: OfferService[]) {
+  private summarizeCost(services: OfferVariety[]) {
     return services.reduce<number>((p, c) => (p += c.getCost()), 0);
   }
 

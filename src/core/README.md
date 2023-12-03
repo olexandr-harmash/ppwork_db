@@ -9,7 +9,6 @@ This project implements an Offer Management System with a modular architecture d
   - [CertainItem](#certainitem)
   - [Offer](#offer)
   - [OfferSale](#offersale)
-  - [OfferService](#offerservice)
   - [OfferVariety](#offervariety)
   - [Entity](#entity)
   - [Uuid](#uuid)
@@ -46,12 +45,10 @@ Class representing an offer.
 
 - `props`: OfferAttributes - The attributes of the offer.
 - `varietyMap`: { [key: string]: string[] } - A map of variety attributes.
-- `serviceMap`: { [key: string]: string[] } - A map of service attributes.
 
 #### Methods
 
 - `getVarietyMap(): { [key: string]: string[] }` - Get a map of variety attributes.
-- `getServiceMap(): { [key: string]: string[] }` - Get a map of service attributes.
 - `devideByAttributes(attributes: OfferVariaty[]): CertainItem` - Divide the offer into a certain item based on provided attributes.
 
 ### OfferSale
@@ -68,18 +65,6 @@ Class representing a sale associated with an offer.
 - `isAllSalesMatched(attributes: OfferVariaty[]): boolean` - Check if all fariaties are matched.
 - `isVarietiesExist(attributes: OfferVariety[]): boolean` - Check if all fariaties are matched.
 
-### OfferService
-
-Class representing a service associated with an offer.
-
-#### Properties
-
-- `props`: OfferServiceAttributes - The attributes of the service.
-
-#### Methods
-
-- `getCost(): number` - Get the cost of the service.
-
 ### OfferVariety
 
 Class representing a variety of an offer.
@@ -87,6 +72,12 @@ Class representing a variety of an offer.
 #### Properties
 
 - `props`: OfferVarietyAttributes - The attributes of the variety.
+
+#### Methods
+
+- `getCost(): number` - Get additional cost for variety.
+- `getName(): number` - Get additional name for variety.
+- `getValue(): number` - Get additional value for variety.
 
 ### Entity
 

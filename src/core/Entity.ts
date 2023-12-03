@@ -8,4 +8,8 @@ export default class Entity<T> {
     this.props = props;
     this.id = new Uuid(id);
   }
+
+  getId() {
+    return this.id.getStringValue()
+  }
 }

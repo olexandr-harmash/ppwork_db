@@ -1,7 +1,6 @@
 // Import necessary classes
 import Offer from "./Offer";
 import OfferSale from "./OfferSale";
-import OfferService from "./OfferService";
 import OfferVariety from "./OfferVariety";
 
 describe("Entities Tests", () => {
@@ -14,19 +13,14 @@ describe("Entities Tests", () => {
         cost: 100,
         sales: [
           OfferSale.create({
-            varieties: [OfferVariety.create({ name: "key", value: "value" })],
+            varieties: [OfferVariety.create({ name: "key", value: "value", cost: 0 })],
             sale: 0,
           }),
         ],
-        services: [
-          OfferService.create({
-            name: "key",
-            value: "value",
-            cost: 20,
-          }),
-        ],
+       
         varieties: [
           OfferVariety.create({
+            cost: 0,
             name: "key",
             value: "value",
           }),

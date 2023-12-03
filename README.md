@@ -7,7 +7,6 @@ This project implements an Offer Management System with a modular architecture d
 - `BaseOfferData`: Abstract class representing the basic attributes of an offer.
 - `Offer`: Class representing a specific offer with associated services and multipliers.
 - `OfferSale`: Class representing a sale associated with an offer, including a multiplier.
-- `OfferService`: Class representing a service associated with an offer, including a cost.
 - `OfferVariety`: Class representing a variety of an offer.
 - `CertainItem`: Class representing a certain item with specific properties based on an offer.
 - `Entity`: Base class representing a generic entity with a unique identifier.
@@ -38,29 +37,25 @@ To gain a deeper understanding of the project's architecture and code, please re
 
    - [BaseOfferData Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
-3. **CertainItem**
+2. **CertainItem**
 
    - [CertainItem Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
-4. **Offer**
+3. **Offer**
 
    - [Offer Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
-5. **OfferSale**
+4. **OfferSale**
 
    - [OfferSale Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
-6. **OfferService**
-
-   - [OfferService Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
-
-7. **OfferVariety**
+5. **OfferVariety**
 
    - [OfferVariety Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
-8. **Entity**
+6. **Entity**
 
    - [Entity Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
 
-9. **Uuid**
+7. **Uuid**
    - [Uuid Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)

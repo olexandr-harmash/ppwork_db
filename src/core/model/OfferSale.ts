@@ -19,6 +19,10 @@ export default class OfferSale extends Entity<OfferSaleAttributes> {
     return this.props.sale;
   }
 
+  getVarieties() {
+    return this.props.varieties;
+  }
+
   isVarietiesExist(attributes: OfferVariety[]) {
     return attributes.every((attribute) =>
       this.props.varieties.find((variety) => attribute.compare(variety))

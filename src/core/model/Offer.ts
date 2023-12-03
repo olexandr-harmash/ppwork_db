@@ -1,11 +1,9 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
 import CertainItem from "./CertainItem";
-import OfferService from "./OfferService";
 import OfferSale from "./OfferSale";
 import OfferVariety from "./OfferVariety";
 
 export interface OfferAttributes extends BaseOfferDataAttributes {
-  services: OfferService[];
   sales: OfferSale[];
 }
 
@@ -54,8 +52,6 @@ export default class Offer extends BaseOfferData {
       ...super.getProps(),
       ...props,
     };
-
-    this.serviceMap = this.getPropsMap(props.services);
     this.varietyMap = this.getPropsMap(props.varieties);
   }
 
@@ -80,20 +76,6 @@ export default class Offer extends BaseOfferData {
   }
 
   /**
-   * Private method to get costs that match provided attributes.
-   *
-   * @param {BaseOfferProps} attributes - The attributes to match.
-   * @returns {OfferService[]} Array of services that match the provided attributes.
-   * @private
-   */
-  private getMatchedServices(attributes: OfferVariety[]) {
-    const existedCosts = this.props.services.filter((service) =>
-      attributes.find((attribute) => service.compare(attribute))
-    );
-    return existedCosts;
-  }
-
-  /**
    * Private method to get multipliers that match provided attributes.
    *
    * @param {BaseOfferProps} attributes - The attributes to match.
@@ -112,17 +94,20 @@ export default class Offer extends BaseOfferData {
    * @private
    */
   private getPropsMap(varieties: OfferVariety[]) {
-    return varieties.reduce<{ [key: string]: string[] }>((prev, variety: OfferVariety) => {
-      const key = variety.getName();
+    return varieties.reduce<{ [key: string]: string[] }>(
+      (prev, variety: OfferVariety) => {
+        const key = variety.getName();
 
-      if (!prev[key]) {
-        prev[key] = [];
-      }
+        if (!prev[key]) {
+          prev[key] = [];
+        }
 
-      prev[key].push(variety.getValue());
+        prev[key].push(variety.getValue());
 
-      return prev;
-    }, {});
+        return prev;
+      },
+      {}
+    );
   }
 
   /**
@@ -132,6 +117,14 @@ export default class Offer extends BaseOfferData {
    */
   public getServiceMap() {
     return this.serviceMap;
+  }
+
+  public getVarieties() {
+    return this.props.varieties;
+  }
+
+  public getSales() {
+    return this.props.sales;
   }
 
   /**
@@ -150,7 +143,6 @@ export default class Offer extends BaseOfferData {
    * @returns {CertainItem} The created CertainItem instance.
    */
   public devideByAttributes(attributes: OfferVariety[]) {
-    const existedCosts = this.getMatchedServices(attributes);
     const existedOffer = this.getMatchedVarieties(attributes);
     const existedMultiply = this.getMatchedSales(attributes);
 
@@ -159,7 +151,6 @@ export default class Offer extends BaseOfferData {
         cost: this.props.cost,
         name: this.props.name,
         varieties: existedOffer,
-        services: existedCosts,
         sale: existedMultiply,
       },
       this.getUuid()
