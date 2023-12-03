@@ -1,11 +1,11 @@
 // Import necessary classes
-import OfferService from "./OfferService";
 import OfferVariety from "./OfferVariety";
 
 describe("Entities Tests", () => {
   describe("OfferSale", () => {
     it("should create an OfferSale instance with correct properties", () => {
       const offerSale = OfferVariety.create({
+        cost: 0,
         name: "name",
         value: "value",
       });
@@ -14,9 +14,9 @@ describe("Entities Tests", () => {
     });
   });
 
-  describe("OfferService", () => {
-    it("should create an OfferService instance with correct properties", () => {
-      const offerService = OfferService.create({
+  describe("OfferVariety", () => {
+    it("should create an OfferVariety instance with correct properties", () => {
+      const offerService = OfferVariety.create({
         name: "name",
         value: "value",
         cost: 20,

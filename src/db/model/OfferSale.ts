@@ -1,9 +1,14 @@
-import { DataTypes, Model, Optional, Sequelize } from "sequelize";
+import {
+  BelongsToManyAddAssociationMixin,
+  DataTypes,
+  Model,
+  Optional,
+  Sequelize,
+} from "sequelize";
+import OfferVariety from "./OfferVariety";
 
 export interface OfferSaleAttributes {
   id: string;
-  name: string;
-  value: string;
   multiply: number;
   offer_id: string;
 }
@@ -17,13 +22,16 @@ export default class OfferSale
   implements OfferSaleAttributes
 {
   declare id: string;
-  declare name: string;
-  declare value: string;
   declare multiply: number;
   declare offer_id: string;
 
+  declare setOfferVarieties: BelongsToManyAddAssociationMixin<OfferVariety, string>;
+
   static Assosiation(models: any) {
     models.OfferSale.belongsTo(models.Offer);
+    models.OfferSale.belongsToMany(models.OfferVariety, {
+      through: "VarietySale"
+    });
   }
 
   static Init(sequelize: Sequelize) {
@@ -35,16 +43,6 @@ export default class OfferSale
           allowNull: false,
           primaryKey: true,
         },
-        name: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          primaryKey: true,
-        },
-        value: {
-          type: DataTypes.STRING,
-          allowNull: false,
-          primaryKey: true,
-        },
         multiply: {
           type: DataTypes.REAL,
           allowNull: false,
@@ -52,7 +50,6 @@ export default class OfferSale
         offer_id: {
           type: DataTypes.UUID,
           allowNull: false,
-          primaryKey: true,
         },
       },
       {

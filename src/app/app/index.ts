@@ -8,6 +8,10 @@ import * as fs from "fs";
 import * as path from "path";
 import { Logger } from "../../logger";
 import loggerMiddleware from "../../router/midelware/Logger";
+import OfferRepoImpl from "../../module/repos/OfferRepo";
+import Offer from "../../core/model/Offer";
+import OfferSale from "../../core/model/OfferSale";
+import OfferVariety from "../../core/model/OfferVariety";
 
 export default class App extends BaseApp {
   public readonly express: Express.Application;
@@ -36,6 +40,8 @@ export default class App extends BaseApp {
       ).default();
       router.Init();
       this.express.use(`/api/v${this.config.apiVersion}`, router.getRouter());
+
+      const repo = new OfferRepoImpl(this.models, this.sequelize);
 
       this.server = await this.serverInitializer();
       this.serverListener();

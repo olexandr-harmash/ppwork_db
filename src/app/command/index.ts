@@ -9,7 +9,7 @@ export default class Command extends BaseApp {
     this._args = process.argv.length > 3 ? process.argv.slice(3) : null;
   }
 
-  public async init(): Promise<void> {
+  public async Init(): Promise<void> {
     // Run command
     this.RunCommand(process.argv[2]);
   }
