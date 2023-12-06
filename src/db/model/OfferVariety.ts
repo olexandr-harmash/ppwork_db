@@ -2,7 +2,6 @@ import { DataTypes, Model, Optional, Sequelize } from "sequelize";
 
 export interface OfferVarietyAttributes {
   id: string;
-  cost: number;
   name: string;
   value: string;
   offer_id: string;
@@ -18,13 +17,15 @@ export default class OfferVariety
   implements OfferVarietyAttributes
 {
   declare id: string;
-  declare cost: number;
   declare name: string;
   declare value: string;
   declare offer_id: string;
 
   static Assosiation(models: any) {
-    models.OfferVariety.belongsTo(models.Offer);
+    models.OfferVariety.belongsTo(models.Offer, { foreignKey: "offer_id" });
+    models.OfferVariety.hasOne(models.OfferService, {
+      foreignKey: "offer_variety_id",
+    });
     models.OfferVariety.belongsToMany(models.OfferSale, {
       through: "VarietySale",
     });
@@ -38,10 +39,6 @@ export default class OfferVariety
           defaultValue: DataTypes.UUIDV4,
           allowNull: false,
           primaryKey: true,
-        },
-        cost: {
-          type: DataTypes.REAL,
-          allowNull: false,
         },
         name: {
           type: DataTypes.STRING,
@@ -60,7 +57,7 @@ export default class OfferVariety
         sequelize,
         modelName: "OfferVariety",
         paranoid: true,
-      },
+      }
     );
   }
 }

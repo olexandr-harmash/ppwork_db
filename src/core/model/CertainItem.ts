@@ -1,5 +1,6 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
 import OfferSale from "./OfferSale";
+import OfferService from "./OfferService";
 import OfferVariety from "./OfferVariety";
 
 /**
@@ -63,9 +64,8 @@ export default class CertainItem extends BaseOfferData {
    * @returns {OfferService[]} Array of services without sales.
    */
   private getCostWithoutSales() {
-    return this.props.varieties.filter(
-      (variety) =>
-        variety.getCost() && !this.props.sale?.isVarietiesExist([variety])
+    return this.props.services.filter(
+      (service) => !this.props.sale?.isVarietiesExist([service])
     );
   }
 
@@ -75,19 +75,18 @@ export default class CertainItem extends BaseOfferData {
    * @returns {OfferService[]} Array of services with sales.
    */
   private getCostWithSales() {
-    return this.props.varieties.filter(
-      (variety) =>
-        variety.getCost() && this.props.sale?.isVarietiesExist([variety])
+    return this.props.services.filter((service) =>
+      this.props.sale?.isVarietiesExist([service])
     );
   }
 
   /**
    * Private method to summarize the cost of services.
    * @private
-   * @param {OfferVariety[]} services - Array of services to summarize.
+   * @param {OfferService[]} services - Array of services to summarize.
    * @returns {number} The total cost.
    */
-  private summarizeCost(services: OfferVariety[]) {
+  private summarizeCost(services: OfferService[]) {
     return services.reduce<number>((p, c) => (p += c.getCost()), 0);
   }
 

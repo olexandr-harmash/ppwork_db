@@ -9,6 +9,7 @@ This project implements an Offer Management System with a modular architecture d
 - `OfferSale`: Class representing a sale associated with an offer, including a multiplier.
 - `OfferVariety`: Class representing a variety of an offer.
 - `CertainItem`: Class representing a certain item with specific properties based on an offer.
+- `OfferService`: Class representing a variety with additional cost.
 - `Entity`: Base class representing a generic entity with a unique identifier.
 - `Uuid`: Class representing a universally unique identifier.
 
@@ -59,3 +60,6 @@ To gain a deeper understanding of the project's architecture and code, please re
 
 7. **Uuid**
    - [Uuid Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)
+
+8. **OfferService**
+   - [OfferService Documentation](https://github.com/olexandr-harmash/ppwork_db/blob/development/src/core/README.md)

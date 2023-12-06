@@ -5,7 +5,6 @@ describe("Entities Tests", () => {
   describe("OfferSale", () => {
     it("should create an OfferSale instance with correct properties", () => {
       const offerSale = OfferVariety.create({
-        cost: 0,
         name: "name",
         value: "value",
       });
@@ -19,10 +18,9 @@ describe("Entities Tests", () => {
       const offerService = OfferVariety.create({
         name: "name",
         value: "value",
-        cost: 20,
       });
 
-      expect(offerService.getCost()).toBe(20);
+      expect(offerService.getValue).toBe("value");
     });
   });
 });

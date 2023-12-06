@@ -9,9 +9,6 @@ import * as path from "path";
 import { Logger } from "../../logger";
 import loggerMiddleware from "../../router/midelware/Logger";
 import OfferRepoImpl from "../../module/repos/OfferRepo";
-import Offer from "../../core/model/Offer";
-import OfferSale from "../../core/model/OfferSale";
-import OfferVariety from "../../core/model/OfferVariety";
 
 export default class App extends BaseApp {
   public readonly express: Express.Application;

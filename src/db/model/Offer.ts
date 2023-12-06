@@ -22,6 +22,9 @@ export default class Offer
     models.Offer.hasMany(models.OfferSale, {
       foreignKey: "offer_id",
     });
+    models.Offer.hasMany(models.OfferService, {
+      foreignKey: "offer_id",
+    });
     models.Offer.hasMany(models.OfferVariety, {
       foreignKey: "offer_id",
     });

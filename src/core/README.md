@@ -10,6 +10,7 @@ This project implements an Offer Management System with a modular architecture d
   - [Offer](#offer)
   - [OfferSale](#offersale)
   - [OfferVariety](#offervariety)
+  - [OfferService](#offerservice)
   - [Entity](#entity)
   - [Uuid](#uuid)
 
@@ -24,6 +25,16 @@ Base class for offer data entities.
 - `name`: string - The name of the offer data.
 - `cost`: number - The base cost of the offer data.
 - `varieties`: OfferVariaty[] - Array of varieties associated with the offer data.
+
+### OfferService
+
+Class representing a certain variaty with additional cost.
+
+#### Properties
+
+- `name`: string - The name of the offer data.
+- `cost`: number - The base cost of the offer data.
+- `value`: string - The value.
 
 ### CertainItem
 

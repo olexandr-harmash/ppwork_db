@@ -1,7 +1,6 @@
 import Entity from "../Entity";
 
 export interface OfferVarietyAttributes {
-  cost: number;
   name: string;
   value: string;
 }
@@ -9,10 +8,6 @@ export interface OfferVarietyAttributes {
 export default class OfferVariety extends Entity<OfferVarietyAttributes> {
   protected constructor(props: OfferVarietyAttributes, id?: string) {
     super(props);
-  }
-
-  getCost() {
-    return this.props.cost;
   }
   
   getName() {

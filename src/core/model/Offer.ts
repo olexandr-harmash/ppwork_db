@@ -1,6 +1,7 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
 import CertainItem from "./CertainItem";
 import OfferSale from "./OfferSale";
+import OfferService from "./OfferService";
 import OfferVariety from "./OfferVariety";
 
 export interface OfferAttributes extends BaseOfferDataAttributes {
@@ -143,15 +144,17 @@ export default class Offer extends BaseOfferData {
    * @returns {CertainItem} The created CertainItem instance.
    */
   public devideByAttributes(attributes: OfferVariety[]) {
-    const existedOffer = this.getMatchedVarieties(attributes);
     const existedMultiply = this.getMatchedSales(attributes);
+    const existedServices = this.getMatchedServices(attributes);
+    const existedVarieties = this.getMatchedVarieties(attributes);
 
     return CertainItem.create(
       {
         cost: this.props.cost,
         name: this.props.name,
-        varieties: existedOffer,
         sale: existedMultiply,
+        services: existedServices,
+        varieties: existedVarieties,
       },
       this.getUuid()
     );
