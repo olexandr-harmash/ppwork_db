@@ -6,7 +6,6 @@ export default class OfferVarietyMap {
   }
   static toDomain(model: any): DomainOfferVariety {
     return DomainOfferVariety.create({
-      cost: model.cost,
       name: model.name,
       value: model.value
     }, model.id)
@@ -16,7 +15,6 @@ export default class OfferVarietyMap {
       id: model.getId(),
       name: model.getName(),
       value: model.getValue(),
-      cost: model.getCost(),
     }
   }
 }

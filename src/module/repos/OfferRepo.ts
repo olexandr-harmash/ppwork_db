@@ -5,6 +5,8 @@ import OfferRepo from "../OfferRepo";
 import OfferMap from "../mapper/OfferMap";
 import OfferSaleMap from "../mapper/OfferSaleMap";
 import OfferVarietyMap from "../mapper/OfferVarietyMap";
+import OfferServiceMap from "../mapper/OfferService";
+import OfferService from "../../db/model/OfferService";
 
 export default class OfferRepoImpl implements OfferRepo {
   private models: any;
@@ -26,27 +28,58 @@ export default class OfferRepoImpl implements OfferRepo {
       await this.sequelize.transaction(async (t) => {
         await OfferModel.create(OfferMap.toPersistent(offer));
 
-        const varietiesPromises = offer.getVarieties().map(async (variety) => {
+        const persistentVarieties = offer.getVarieties().map((variety) => {
           const persistent = OfferVarietyMap.toPersistent(variety);
           persistent.offer_id = offerId;
-          await OfferVariety.create(persistent, { transaction: t });
+          return persistent;
         });
 
-        const salesPromises = offer.getSales().map(async (sale) => {
-          let persistent = OfferSaleMap.toPersistent(sale);
+        const varietyResults = await OfferVariety.bulkCreate(
+          persistentVarieties,
+          { transaction: t }
+        );
+
+        const persistentServices = offer.getServices().map((service) => {
+          const persistent = OfferVarietyMap.toPersistent(service);
           persistent.offer_id = offerId;
-          const saleModel = await OfferSale.create(persistent);
-
-          const saleVarietiesPromises = sale
-            .getVarieties()
-            .map(async (variety) =>
-              saleModel.setOfferVarieties(variety.getId())
-            );
-
-          await Promise.all(saleVarietiesPromises);
+          return persistent;
         });
 
-        await Promise.all([...varietiesPromises, ...salesPromises]);
+        const serviceResults = await OfferVariety.bulkCreate(
+          persistentServices,
+          { transaction: t }
+        );
+
+        const persistentServicesCost = offer.getServices().map((service, i) => {
+          const persistent = OfferServiceMap.toPersistent(service);
+          persistent.offer_id = offerId;
+          persistent.offer_variety_id = serviceResults[i].id;
+          return persistent;
+        });
+
+        const servicesCostResults = await OfferService.bulkCreate(
+          persistentServicesCost,
+          { transaction: t }
+        );
+
+        const persistentSales = offer.getSales().map((sale) => {
+          const persistent = OfferSaleMap.toPersistent(sale);
+          persistent.offer_id = offerId;
+          return persistent;
+        });
+
+        const saleResults = await OfferSale.bulkCreate(persistentSales, {
+          transaction: t,
+        });
+
+        saleResults.map(async (result, i) => {
+          const varietyIds = offer
+            .getSales()
+            [i].getVarieties()
+            .map((variety) => variety.getId());
+
+          varietyIds.map((id) => result.setOfferVarieties(id));
+        });
       });
     } catch (error) {
       console.log(error);
@@ -57,12 +90,21 @@ export default class OfferRepoImpl implements OfferRepo {
     const OfferModel = this.models.Offer;
     const OfferSale = this.models.OfferSale;
     const OfferVariety = this.models.OfferVariety;
-    const SaleVariety = this.models.SaleVariety;
+    const OfferService = this.models.OfferService;
 
     const rawSequilize = await OfferModel.findAll({
       include: [
         {
+          model: OfferService,
+          include: OfferVariety,
+        },
+        {
           model: OfferVariety,
+          where: {
+            value: {
+              [Op.in]: varities.map((variety) => variety.getValue()),
+            },
+          },
         },
         {
           model: OfferSale,
@@ -71,7 +113,6 @@ export default class OfferRepoImpl implements OfferRepo {
       ],
       raw: false,
     });
-
     return rawSequilize.map((raw) => OfferMap.toDomain(raw));
   }
 }

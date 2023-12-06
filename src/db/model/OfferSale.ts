@@ -28,7 +28,7 @@ export default class OfferSale
   declare setOfferVarieties: BelongsToManyAddAssociationMixin<OfferVariety, string>;
 
   static Assosiation(models: any) {
-    models.OfferSale.belongsTo(models.Offer);
+    models.OfferSale.belongsTo(models.Offer, { foreignKey: "offer_id" });
     models.OfferSale.belongsToMany(models.OfferVariety, {
       through: "VarietySale"
     });

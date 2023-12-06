@@ -1,6 +1,7 @@
 // Import necessary classes
 import Offer from "./Offer";
 import OfferSale from "./OfferSale";
+import OfferService from "./OfferService";
 import OfferVariety from "./OfferVariety";
 
 describe("Entities Tests", () => {
@@ -13,18 +14,24 @@ describe("Entities Tests", () => {
         cost: 100,
         sales: [
           OfferSale.create({
-            varieties: [OfferVariety.create({ name: "key", value: "value", cost: 0 })],
+            varieties: [OfferVariety.create({ name: "key", value: "value" })],
             sale: 0,
           }),
         ],
        
         varieties: [
           OfferVariety.create({
-            cost: 0,
             name: "key",
             value: "value",
           }),
         ],
+        services: [
+          OfferService.create({
+            name: "key",
+            value: "value",
+            cost: 50,
+          })
+        ]
       });
 
       expect(offer.getOfferMap()).toEqual({ key: ["value"] });
