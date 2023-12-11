@@ -2,6 +2,49 @@
 
 This project implements an Offer Management System with a modular architecture designed for flexibility and scalability.
 
+# File Structure
+
+The project is organized with the following directory and file structure:
+
+## app/
+- **app/**: Main application directory.
+- **command/**: Application commands.
+- **baseapp**: Basic components and services of the application.
+
+## config/
+- **config/**: Application configuration files.
+
+## nginx/
+- **nginx/**: Configurations for Nginx.
+
+## db/
+- **db/models/**: Database models.
+
+## module/
+- **module/**: Application modules.
+  - **controller/**: Controllers for modules.
+    - **crud/**: Controllers for CRUD operations.
+    - **policies/**: Controller policies.
+    - **baseController**: Base controller.
+    - **controller**: General controllers.
+  - **repo/**: Module repositories.
+
+## mapper/
+- **mapper/**: Mappers for data transformation.
+
+## dto/
+- **dto/**: Data transfer objects.
+
+## router/
+- **router/**: Application routes.
+  - **middlewares/**: Middlewares for routes.
+  - **v1/**: Route versions.
+
+## logger
+- **logger**: Application logging.
+
+Each directory contains its set of files and subdirectories for logical grouping of the application's functionality. This structure is designed to facilitate understanding and maintenance of the project.
+
 ## Project Structure
 
 - `BaseOfferData`: Abstract class representing the basic attributes of an offer.
