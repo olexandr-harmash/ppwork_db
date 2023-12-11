@@ -3,12 +3,15 @@ import * as BodyParser from "body-parser";
 import Express from "express";
 import * as Http from "http";
 import * as Https from "https";
+import fileUpload from "express-fileupload";
 import { networkInterfaces, NetworkInterfaceInfo } from "os";
 import * as fs from "fs";
 import * as path from "path";
 import { Logger } from "../../logger";
 import loggerMiddleware from "../../router/midelware/Logger";
 import OfferRepoImpl from "../../module/repos/OfferRepo";
+import OfferControllerImp from "../../module/controller/OfferController";
+import cors from "cors";
 
 export default class App extends BaseApp {
   public readonly express: Express.Application;
@@ -19,8 +22,14 @@ export default class App extends BaseApp {
     super(config);
 
     this.express = Express();
-    this.express.use(BodyParser.urlencoded({ extended: false }));
-    this.express.use(BodyParser.json());
+    this.express.use(cors());
+    this.express.use(BodyParser.json(this.config.bodyParser));
+    this.express.use(BodyParser.urlencoded(this.config.bodyParser));
+    this.express.use(
+      fileUpload({
+        limits: { fileSize: 50 * 1024 * 1024 },
+      })
+    );
     this.express.use(
       loggerMiddleware(
         new Logger(this.config).setPrefix(`[Router]:`).getLogger()
@@ -32,13 +41,18 @@ export default class App extends BaseApp {
     try {
       await this.sequelize.authenticate();
 
+      const repo = new OfferRepoImpl(this.models, this.sequelize);
+
+      const controller = new OfferControllerImp(
+        repo,
+        new Logger(this.config).setPrefix(`[Controller]:`).getLogger()
+      );
+
       const router = new (
         await import(`../../router/v${this.config.apiVersion}`)
-      ).default();
+      ).default(controller);
       router.Init();
       this.express.use(`/api/v${this.config.apiVersion}`, router.getRouter());
-
-      const repo = new OfferRepoImpl(this.models, this.sequelize);
 
       this.server = await this.serverInitializer();
       this.serverListener();

@@ -1,7 +1,11 @@
 import { Op, Sequelize } from "sequelize";
 import Offer from "../../core/model/Offer";
 import OfferVariety from "../../core/model/OfferVariety";
-import OfferRepo from "../OfferRepo";
+import OfferRepo, {
+  OfferRepoFilters,
+  OfferRepoOptions,
+  OfferSeachResult,
+} from "../OfferRepo";
 import OfferMap from "../mapper/OfferMap";
 import OfferSaleMap from "../mapper/OfferSaleMap";
 import OfferVarietyMap from "../mapper/OfferVarietyMap";
@@ -86,13 +90,21 @@ export default class OfferRepoImpl implements OfferRepo {
     }
   }
 
-  async getByVariety(varities: OfferVariety[]): Promise<Offer[]> {
+  async getByFilters(
+    filters: OfferRepoFilters,
+    options: OfferRepoOptions
+  ): Promise<OfferSeachResult> {
     const OfferModel = this.models.Offer;
     const OfferSale = this.models.OfferSale;
     const OfferVariety = this.models.OfferVariety;
     const OfferService = this.models.OfferService;
 
-    const rawSequilize = await OfferModel.findAll({
+    const { limit, page } = options;
+
+    const rawSequilize = await OfferModel.findAndCountAll({
+      distinct: true,
+      limit,
+      offset: page ? page * limit : 0,
       include: [
         {
           model: OfferService,
@@ -100,11 +112,17 @@ export default class OfferRepoImpl implements OfferRepo {
         },
         {
           model: OfferVariety,
-          where: {
-            value: {
-              [Op.in]: varities.map((variety) => variety.getValue()),
-            },
-          },
+          ...(filters.varieties.length
+            ? {
+                where: {
+                  value: {
+                    [Op.in]: filters.varieties.map((variety) =>
+                      variety.getValue()
+                    ),
+                  },
+                },
+              }
+            : {}),
         },
         {
           model: OfferSale,
@@ -113,6 +131,12 @@ export default class OfferRepoImpl implements OfferRepo {
       ],
       raw: false,
     });
-    return rawSequilize.map((raw) => OfferMap.toDomain(raw));
+    console.log(rawSequilize);
+    return {
+      offers: rawSequilize.rows.map((raw) => OfferMap.toDomain(raw)),
+      amount: rawSequilize.count,
+      limit,
+      page,
+    };
   }
 }
