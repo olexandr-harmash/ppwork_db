@@ -10,6 +10,7 @@ describe("Entities Tests", () => {
   describe("Offer", () => {
     it("should create an Offer instance with correct properties", () => {
       const offer = Offer.create({
+        imgUrls: [],
         name: "Test Offer",
         cost: 100,
         sales: [

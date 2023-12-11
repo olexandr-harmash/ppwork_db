@@ -1,7 +1,6 @@
 import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
 import CertainItem from "./CertainItem";
 import OfferSale from "./OfferSale";
-import OfferService from "./OfferService";
 import OfferVariety from "./OfferVariety";
 
 export interface OfferAttributes extends BaseOfferDataAttributes {
@@ -54,6 +53,7 @@ export default class Offer extends BaseOfferData {
       ...props,
     };
     this.varietyMap = this.getPropsMap(props.varieties);
+    this.serviceMap = this.getPropsMap(props.services);
   }
 
   /**
@@ -137,6 +137,10 @@ export default class Offer extends BaseOfferData {
     return this.varietyMap;
   }
 
+  public addSale(sale: OfferSale) {
+    this.props.sales.push(sale);
+  }
+
   /**
    * Public method to divide the offer into a CertainItem based on provided attributes.
    *
@@ -150,6 +154,7 @@ export default class Offer extends BaseOfferData {
 
     return CertainItem.create(
       {
+        imgUrls: this.getImgUrls(),
         cost: this.props.cost,
         name: this.props.name,
         sale: existedMultiply,
