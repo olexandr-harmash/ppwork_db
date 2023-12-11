@@ -5,6 +5,7 @@ import OfferVariety from "./OfferVariety";
 export interface BaseOfferDataAttributes {
   name: string;
   cost: number;
+  imgUrls: string[];
   services: OfferService[];
   varieties: OfferVariety[];
 }
@@ -32,6 +33,10 @@ export default abstract class BaseOfferData extends Entity<BaseOfferDataAttribut
     return this.props.name;
   }
 
+  public getImgUrls() {
+    return this.props.imgUrls;
+  }
+
   public getCost() {
     return this.props.cost;
   }
@@ -50,5 +55,25 @@ export default abstract class BaseOfferData extends Entity<BaseOfferDataAttribut
 
   protected getProps() {
     return this.props;
+  }
+
+  public setName(name: string) {
+    this.props.name = name;
+  }
+
+  public setImgUrls(urls: string[]) {
+    this.props.imgUrls = urls;
+  }
+
+  public setCost(cost: number) {
+    this.props.cost = cost;
+  }
+
+  public addVariety(variety: OfferVariety) {
+    this.props.varieties.push(variety);
+  }
+
+  public addService(service: OfferService) {
+    this.props.services.push(service);
   }
 }

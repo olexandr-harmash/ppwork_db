@@ -4,6 +4,7 @@ export interface OfferAttributes {
   id: string;
   name: string;
   cost: number;
+  img_urls: string[];
 }
 
 export interface OfferInput extends Optional<OfferAttributes, "id"> {}
@@ -17,6 +18,7 @@ export default class Offer
   declare id: string;
   declare name: string;
   declare cost: number;
+  declare img_urls: string[];
 
   static Assosiation(models: any) {
     models.Offer.hasMany(models.OfferSale, {
@@ -38,6 +40,10 @@ export default class Offer
           defaultValue: DataTypes.UUIDV4,
           allowNull: false,
           primaryKey: true,
+        },
+        img_urls: {
+          type: DataTypes.ARRAY(DataTypes.STRING),
+          allowNull: false,
         },
         name: {
           type: DataTypes.STRING,
