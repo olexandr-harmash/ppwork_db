@@ -29,6 +29,11 @@ export default class Router {
       this.controller.GetByFilters()
     );
 
+    this.router.get(
+      "/filters/:category",
+      this.controller.GetFiltersByCategory()
+    );
+
     this.router.post("/offer", CreateOffer(), this.controller.Create());
   }
 

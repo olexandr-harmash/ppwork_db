@@ -9,9 +9,15 @@ import * as fs from "fs";
 import * as path from "path";
 import { Logger } from "../../logger";
 import loggerMiddleware from "../../router/midelware/Logger";
-import OfferRepoImpl from "../../module/repos/OfferRepo";
 import OfferControllerImp from "../../module/controller/OfferController";
 import cors from "cors";
+import OfferRepoImpl from "../../module/repos/Offer";
+import SaleRepoImpl from "../../module/repos/Sale";
+import Variety from "../../core/model/Veriety";
+import Sale from "../../core/model/Sale";
+import Offer from "../../core/model/Offer";
+import VarietyRepoImpl from "../../module/repos/Variety";
+import CategoryRepoImpl from "../../module/repos/Category";
 
 export default class App extends BaseApp {
   public readonly express: Express.Application;
@@ -41,11 +47,43 @@ export default class App extends BaseApp {
     try {
       await this.sequelize.authenticate();
 
-      const repo = new OfferRepoImpl(this.models, this.sequelize);
+      const testVariety = Variety.create({
+        name: "size",
+        value: "250g",
+        additionalCost: 0,
+        multiplyCost: 0.25,
+      });
+
+      const testSale = Sale.create({ varieties: [testVariety], multiply: 0.9 });
+
+      const testOffer = Offer.create({
+        varieties: [testVariety],
+        name: "t-shirt",
+        cost: 5.26,
+        sales: [testSale],
+        imgUrls: ["/static"],
+      });
+
+      const saleRepo = new SaleRepoImpl(this.models);
+      const varietyRepo = new VarietyRepoImpl(this.models);
+      const categoryRepo = new CategoryRepoImpl(this.models);
+      const offerRepo = new OfferRepoImpl(this.models, saleRepo);
+
+      // await varietyRepo.create(testVariety);
+      // await offerRepo.create(testOffer);
+
+      // const res = await offerRepo.getByFilters(
+      //   { varieties: [testVariety], types: [] },
+      //   { limit: 20, page: 0 }
+      // );
+
+      //console.log(res.offers[0].devideByAttributes([testVariety]).getCost())
 
       const controller = new OfferControllerImp(
-        repo,
-        new Logger(this.config).setPrefix(`[Controller]:`).getLogger()
+        offerRepo,
+        varietyRepo,
+        categoryRepo,
+        new Logger(this.config).setPrefix(`[Controller]:`).getLogger(),
       );
 
       const router = new (

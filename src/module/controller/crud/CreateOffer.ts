@@ -1,49 +1,63 @@
 import Offer from "../../../core/model/Offer";
-import OfferSale from "../../../core/model/OfferSale";
-import OfferService from "../../../core/model/OfferService";
-import OfferVariety from "../../../core/model/OfferVariety";
-import { CreateOfferDto } from "../../dto/OfferDto";
+import Sale from "../../../core/model/Sale";
+import Variety from "../../../core/model/Veriety";
 import OfferControllerImp from "../OfferController";
 import fs from "fs";
 
 export default function Create(this: OfferControllerImp) {
   return async (req, res) => {
     try {
-      const createDto: CreateOfferDto = req.body;
+      const { name, cost } = req.body;
+      const { varietiesIds, sales } = req.offerData;
 
-      const { varietiesData, servicesData, salesData } = req.offerData;
+      const varieties = await this.varietyRepo.findByPks(varietiesIds);
 
-      const varieties = varietiesData.map((variety) =>
-        OfferVariety.create(variety)
+      const allIdsAreFounded = varieties.length === varietiesIds.length;
+
+      if (!allIdsAreFounded) {
+        return this.clientError(res, "Some IDs are not included in database.");
+      }
+
+      const allSalesHaveMatchedVarieties = sales.every((s) =>
+        s.varieties.every((id) => varietiesIds.find((i) => i === id))
       );
 
-      const services = servicesData.map((service) =>
-        OfferService.create(service)
+      if (!allSalesHaveMatchedVarieties) {
+        return this.clientError(res, "Some sale have wrong variety id.");
+      }
+
+      const vari = varieties.map((v) =>
+        Variety.create(
+          {
+            name: v.getName(),
+            value: v.getValue(),
+            additionalCost: v.getAdditionalCost(),
+            multiplyCost: v.getMultiplyCost(),
+          },
+          v.getId()
+        )
       );
 
-      const sales = salesData.map((sale) => {
-        return OfferSale.create({
-          varieties: varieties
-            .concat(services)
-            .filter((variety) =>
-              sale.varieties.find((value) => value.value === variety.getValue())
-            ),
-          sale: sale.sale,
-        });
-      });
+      const s = sales.map((s) =>
+        Sale.create({
+          varieties: varieties.filter((v) =>
+            varietiesIds.find((id) => id === v.getId())
+          ),
+          multiply: s.multiply,
+        })
+      );
 
-      let offer = Offer.create({
+      const offer = Offer.create({
+        varieties: vari,
+        name,
+        cost,
+        sales: s,
         imgUrls: [],
-        name: createDto.name,
-        cost: createDto.cost,
-        sales: sales,
-        services: services,
-        varieties: varieties,
       });
 
-      offer = await loadStatic(req, offer);
+      loadStatic(req.files.images, offer);
 
-      await this.repo.create(offer);
+      await this.offerRepo.create(offer);
 
       return this.ok(res);
     } catch (error) {
@@ -52,7 +66,7 @@ export default function Create(this: OfferControllerImp) {
   };
 }
 
-function loadStatic(req, offer: Offer) {
+function loadStatic(images, offer: Offer) {
   const urls: string[] = [];
   const dir = `./static/${offer.getId()}/`;
 
@@ -60,7 +74,7 @@ function loadStatic(req, offer: Offer) {
     fs.mkdirSync(dir);
   }
 
-  for (const file of [req.files.images].flat()) {
+  for (const file of [images].flat()) {
     const url = dir + file.name;
     file.mv(url);
     urls.push(`/${offer.getId()}/${file.name}`);

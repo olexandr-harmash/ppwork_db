@@ -1,23 +1,24 @@
+import Uuid from "../core/Uuid";
 import Offer from "../core/model/Offer";
-import OfferVariety from "../core/model/OfferVariety";
 
-export interface OfferRepoOptions {
+export interface OfferOptions {
   limit: number;
   page: number;
-};
-export interface OfferRepoFilters {
-  varieties: OfferVariety[];
-};
-export interface OfferSeachResult {
+}
+export interface OfferFilters {
+  types: Uuid[];
+  varieties: Uuid[];
+}
+export interface SeachResult {
   offers: Offer[];
   amount: number;
   limit: number;
   page: number;
-};
+}
 export default interface OfferRepo {
   create(offer: Offer): Promise<void>;
   getByFilters(
-    filters: OfferRepoFilters,
-    options: OfferRepoOptions
-  ): Promise<OfferSeachResult>;
+    filters: OfferFilters,
+    options: OfferOptions
+  ): Promise<SeachResult>;
 }

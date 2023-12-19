@@ -21,7 +21,7 @@ export default class Command extends BaseApp {
           await this.sequelize.sync({ force: false });
           break;
         default:
-          throw new Error(`Invalid command ${command}`);
+          await this.sequelize.sync({ force: false });
       }
     } catch (err) {
       this.logger.error(`Command ${process.argv[2]} returned error`, err);

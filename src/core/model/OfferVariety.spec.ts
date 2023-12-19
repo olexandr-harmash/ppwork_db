@@ -1,12 +1,16 @@
 // Import necessary classes
-import OfferVariety from "./OfferVariety";
+
+import Variety from "./Veriety";
+
 
 describe("Entities Tests", () => {
   describe("OfferSale", () => {
     it("should create an OfferSale instance with correct properties", () => {
-      const offerSale = OfferVariety.create({
+      const offerSale = Variety.create({
         name: "name",
         value: "value",
+        additionalCost: 0,
+        multiplyCost: 0.25,
       });
 
       expect(offerSale.getName()).toBe("name");
@@ -15,12 +19,14 @@ describe("Entities Tests", () => {
 
   describe("OfferVariety", () => {
     it("should create an OfferVariety instance with correct properties", () => {
-      const offerService = OfferVariety.create({
+      const offerService = Variety.create({
         name: "name",
         value: "value",
+        additionalCost: 0,
+        multiplyCost: 1,
       });
 
-      expect(offerService.getValue).toBe("value");
+      expect(offerService.getValue()).toBe("value");
     });
   });
 });

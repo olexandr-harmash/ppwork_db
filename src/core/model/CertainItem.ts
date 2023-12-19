@@ -1,17 +1,15 @@
-import BaseOfferData, { BaseOfferDataAttributes } from "./BaseOfferData";
-import OfferSale from "./OfferSale";
-import OfferService from "./OfferService";
-import OfferVariety from "./OfferVariety";
+import BaseGoodData, { BaseGoodDataAttributes } from "./BaseGoodData";
+import Sale from "./Sale";
 
 /**
  * Interface defining the attributes specific to the CertainItem class.
  * @interface
  */
-export interface CertainItemAttributes extends BaseOfferDataAttributes {
+export interface CertainItemAttributes extends BaseGoodDataAttributes {
   /**
    * The sale associated with the certain item.
    */
-  sale: OfferSale | undefined;
+  sale: Sale | undefined;
 }
 
 /**
@@ -19,7 +17,7 @@ export interface CertainItemAttributes extends BaseOfferDataAttributes {
  * @class
  * @extends BaseOfferData
  */
-export default class CertainItem extends BaseOfferData {
+export default class CertainItem extends BaseGoodData {
   /**
    * Properties specific to the CertainItem class.
    * @type {CertainItemAttributes}
@@ -59,24 +57,15 @@ export default class CertainItem extends BaseOfferData {
   }
 
   /**
-   * Private method to get costs without sales.
+   * Private method to summarize the cost of services.
    * @private
-   * @returns {OfferService[]} Array of services without sales.
+   * @param {OfferService[]} services - Array of services to summarize.
+   * @returns {number} The total cost.
    */
-  private getCostWithoutSales() {
-    return this.props.services.filter(
-      (service) => !this.props.sale?.isVarietiesExist([service])
-    );
-  }
-
-  /**
-   * Private method to get costs with sales.
-   * @private
-   * @returns {OfferService[]} Array of services with sales.
-   */
-  private getCostWithSales() {
-    return this.props.services.filter((service) =>
-      this.props.sale?.isVarietiesExist([service])
+  private summarizeCost() {
+    return this.props.varieties.reduce<number>(
+      (p, c) => (p += c.getAdditionalCost()),
+      0
     );
   }
 
@@ -86,8 +75,11 @@ export default class CertainItem extends BaseOfferData {
    * @param {OfferService[]} services - Array of services to summarize.
    * @returns {number} The total cost.
    */
-  private summarizeCost(services: OfferService[]) {
-    return services.reduce<number>((p, c) => (p += c.getCost()), 0);
+  private multiplyCost(cost) {
+    return this.props.varieties.reduce<number>(
+      (p, c) => (p *= c.getMultiplyCost()),
+      cost
+    );
   }
 
   /**
@@ -95,10 +87,9 @@ export default class CertainItem extends BaseOfferData {
    * @returns {number} The total cost.
    */
   getCost() {
-    const saledCost =
-      (this.props.cost + this.summarizeCost(this.getCostWithSales())) *
-      //@ts-ignore
-      (this.props.sale?.getSale() || 1);
-    return saledCost + this.summarizeCost(this.getCostWithoutSales());
+    const saledCost = this.props.cost * (this.props.sale?.getMultiply() || 1);
+    return parseFloat(
+      (this.multiplyCost(saledCost) + this.summarizeCost()).toFixed(2)
+    );
   }
 }

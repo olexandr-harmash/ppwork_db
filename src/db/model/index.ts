@@ -1,11 +1,19 @@
+import Category from "./Category";
 import Offer from "./Offer";
-import OfferSale from "./OfferSale";
-import OfferService from "./OfferService";
-import OfferVariety from "./OfferVariety";
+import OfferToVariety from "./OfferToVariety";
+import Sale from "./Sale";
+import SaleToVariety from "./SaleToVariety";
+import Type from "./Type";
+import Variety from "./Variety";
+import VarietyToCategory from "./VarietyToCategory";
 
 export const models = {
-    OfferService,
-    OfferSale,
-    OfferVariety,
     Offer,
+    Sale,
+    Variety,
+    OfferToVariety,
+    SaleToVariety,
+    Category,
+    Type,
+    VarietyToCategory,
 };

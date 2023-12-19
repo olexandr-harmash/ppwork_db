@@ -1,29 +1,20 @@
 import Entity from "../Entity";
-import OfferService from "./OfferService";
-import OfferVariety from "./OfferVariety";
+import Variety from "./Veriety";
 
-export interface BaseOfferDataAttributes {
+export interface BaseGoodDataAttributes {
   name: string;
   cost: number;
   imgUrls: string[];
-  services: OfferService[];
-  varieties: OfferVariety[];
+  varieties: Variety[];
 }
 
-export default abstract class BaseOfferData extends Entity<BaseOfferDataAttributes> {
-  protected constructor(props: BaseOfferDataAttributes, id?: string) {
+export default abstract class BaseGoodData extends Entity<BaseGoodDataAttributes> {
+  protected constructor(props: BaseGoodDataAttributes, id?: string) {
     super(props, id);
   }
 
-  protected getMatchedVarieties(attributes: OfferVariety[]) {
+  protected getMatchedVarieties(attributes: Variety[]) {
     const existedCosts = this.props.varieties.filter((variety) =>
-      attributes.find((attribute) => variety.compare(attribute))
-    );
-    return existedCosts;
-  }
-
-  protected getMatchedServices(attributes: OfferVariety[]) {
-    const existedCosts = this.props.services.filter((variety) =>
       attributes.find((attribute) => variety.compare(attribute))
     );
     return existedCosts;
@@ -41,9 +32,6 @@ export default abstract class BaseOfferData extends Entity<BaseOfferDataAttribut
     return this.props.cost;
   }
 
-  public getServices() {
-    return this.props.services;
-  }
 
   public getId() {
     return this.id.getStringValue();
@@ -69,11 +57,7 @@ export default abstract class BaseOfferData extends Entity<BaseOfferDataAttribut
     this.props.cost = cost;
   }
 
-  public addVariety(variety: OfferVariety) {
+  public addVariety(variety: Variety) {
     this.props.varieties.push(variety);
-  }
-
-  public addService(service: OfferService) {
-    this.props.services.push(service);
   }
 }

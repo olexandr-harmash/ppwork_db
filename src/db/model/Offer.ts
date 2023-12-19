@@ -21,15 +21,10 @@ export default class Offer
   declare img_urls: string[];
 
   static Assosiation(models: any) {
-    models.Offer.hasMany(models.OfferSale, {
-      foreignKey: "offer_id",
+    models.Offer.hasMany(models.Sale, {
+        foreignKey: "offer_id",
     });
-    models.Offer.hasMany(models.OfferService, {
-      foreignKey: "offer_id",
-    });
-    models.Offer.hasMany(models.OfferVariety, {
-      foreignKey: "offer_id",
-    });
+    models.Offer.belongsToMany(models.Variety, { through: { model: models.OfferToVariety }, foreignKey: 'offer_id',  otherKey: 'variety_id', });
   }
 
   static Init(sequelize: Sequelize) {

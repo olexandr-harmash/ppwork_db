@@ -1,10 +1,12 @@
-import OfferVariety from "../../core/model/OfferVariety";
+import Uuid from "../../core/Uuid";
+import Variety from "../../core/model/Veriety";
 
 export interface CreateOfferDto {
   name: string;
   cost: number;
+  categoryId: string;
+  typeId: string;
   varieties: string;
-  services: string;
   sales: string;
   images: any;
 }
@@ -19,7 +21,11 @@ export interface OfferDto {
 export interface FindOfferByFilters {
   page: number;
   limit: number;
-  varieties: OfferVariety[];
+  varieties: Uuid[];
+  filters: {
+    types: string[];
+    varieties: string[];
+  };
 }
 export interface FindOfferByFiltersResult {
   next: boolean;

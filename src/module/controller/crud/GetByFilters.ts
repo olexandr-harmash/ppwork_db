@@ -1,21 +1,20 @@
-import OfferVariety from "../../../core/model/OfferVariety";
+import Uuid from "../../../core/Uuid";
 import { FindOfferByFilters } from "../../dto/OfferDto";
 import CertainItemMap from "../../mapper/CertainItemMap";
-import OfferMap from "../../mapper/OfferMap";
+
 import OfferControllerImp from "../OfferController";
 
-async function getByFilters(dto) {
-  const varieties = dto.varieties.map((variety) =>
-    OfferVariety.create(variety)
-  );
+async function getByFilters(req) {
+  console.log(req.filters.varieties)
+  const varieties = req.filters.varieties.map((id) => new Uuid(id));
 
-  dto.varieties = varieties;
+  req.varieties = await this.varietyRepo.findByPks(varieties);
 
-  return await this.repo.getByFilters(
+  return await this.offerRepo.getByFilters(
     {
       varieties: varieties,
     },
-    { limit: dto.limit, page: dto.page }
+    { limit: req.query.limit, page: req.query.page }
   );
 }
 
@@ -34,7 +33,7 @@ export function GetByFilters(this: OfferControllerImp) {
 
       return this.ok(res, {
         ...painationResult(limit, page, amount),
-        offers: offers.map((offer) => OfferMap.toDTO(offer)),
+        offers,
       });
     } catch (error) {
       return this.fail(res, error);
@@ -45,17 +44,14 @@ export function GetByFilters(this: OfferControllerImp) {
 export function GetCertainByFilters(this: OfferControllerImp) {
   return async (req, res) => {
     try {
-      console.log(req.filters)
-      const dto = req.filters as FindOfferByFilters;
-
       const { limit, page, amount, offers } = await getByFilters.bind(this)(
-        dto
+        req
       );
 
       return this.ok(res, {
         ...painationResult(limit, page, amount),
         items: offers.map((offer) =>
-          CertainItemMap.toDTO(offer.devideByAttributes(dto.varieties))
+          CertainItemMap.toDTO(offer.devideByAttributes(req.varieties))
         ),
       });
     } catch (error) {
